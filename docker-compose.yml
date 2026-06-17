@@ -1,15 +1,23 @@
-version: "3.9"
-
 services:
-  audit-dashboard:
-    build: .
-    container_name: linux-audit-dashboard
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./data:/app/data
-      - ./vault-keys:/app/vault-keys:ro
-      - ./logs:/app/logs
-    environment:
-      - FLASK_ENV=production
-    restart: unless-stopped
+
+linux-reporter:
+
+
+build: .
+
+container_name: linux-reporter
+
+ports:
+  - "5000:5000"
+
+environment:
+  SSH_KEY_PATH: /app/vault-keys/ec2-syd-ops-key.pem
+  ANSIBLE_USER: root
+
+volumes:
+  - ./data:/app/data
+  - ./logs:/app/logs
+  - /var/tmp/key-folder/ec2-syd-ops-key.pem:/app/vault-keys/ec2-syd-ops-key.pem:ro
+
+restart: unless-stopped
+
