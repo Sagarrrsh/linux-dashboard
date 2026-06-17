@@ -24,7 +24,7 @@ INVENTORY_PATH = os.path.join(
 
 PLAYBOOK_PATH = os.path.join(
     BASE_DIR,
-    "collect.yml"
+    "collect.yaml"
 )
 
 PRIVATE_KEY = os.path.join(
