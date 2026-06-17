@@ -1,23 +1,19 @@
 services:
+  linux-reporter:
+    build: .
 
-linux-reporter:
+    container_name: linux-reporter
 
+    ports:
+      - "5000:5000"
 
-build: .
+    environment:
+      SSH_KEY_PATH: /app/vault-keys/ec2-syd-ops-key.pem
+      ANSIBLE_USER: root
 
-container_name: linux-reporter
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - /var/tmp/key-folder/ec2-syd-ops-key.pem:/app/vault-keys/ec2-syd-ops-key.pem:ro
 
-ports:
-  - "5000:5000"
-
-environment:
-  SSH_KEY_PATH: /app/vault-keys/ec2-syd-ops-key.pem
-  ANSIBLE_USER: root
-
-volumes:
-  - ./data:/app/data
-  - ./logs:/app/logs
-  - /var/tmp/key-folder/ec2-syd-ops-key.pem:/app/vault-keys/ec2-syd-ops-key.pem:ro
-
-restart: unless-stopped
-
+    restart: unless-stopped
