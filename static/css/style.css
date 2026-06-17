@@ -1,0 +1,181 @@
+/* ── Reset & base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: #0f1117;
+    color: #e2e8f0;
+    min-height: 100vh;
+}
+
+a { color: #63b3ed; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Navbar ── */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 2rem;
+    background: #1a1d27;
+    border-bottom: 1px solid #2d3149;
+}
+
+.nav-brand { font-size: 1.2rem; font-weight: 700; color: #90cdf4; }
+
+.nav-links { display: flex; gap: 1.5rem; font-size: 0.9rem; }
+
+/* ── Container ── */
+.container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+/* ── Page title ── */
+.page-title { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; }
+.last-scan { font-size: 0.8rem; color: #718096; margin-bottom: 1.5rem; }
+
+/* ── Stats grid ── */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: #1a1d27;
+    border: 1px solid #2d3149;
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.stat-label { font-size: 0.75rem; text-transform: uppercase; color: #718096; letter-spacing: 0.05em; }
+.stat-value { font-size: 2rem; font-weight: 700; }
+
+.stat-card.online  .stat-value { color: #68d391; }
+.stat-card.offline .stat-value { color: #fc8181; }
+.stat-card.health  .stat-value { color: #63b3ed; }
+
+/* ── Forms ── */
+.scan-form, .search-section, .server-table-section {
+    background: #1a1d27;
+    border: 1px solid #2d3149;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+h2 { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: #90cdf4; }
+
+textarea, input[type="text"] {
+    width: 100%;
+    background: #0f1117;
+    border: 1px solid #2d3149;
+    border-radius: 6px;
+    color: #e2e8f0;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.9rem;
+    resize: vertical;
+}
+
+textarea:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: #63b3ed;
+}
+
+.btn-primary {
+    margin-top: 0.75rem;
+    background: #3182ce;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.6rem 1.4rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.btn-primary:hover { background: #2b6cb0; }
+
+/* ── Search results ── */
+#search-results { margin-top: 0.75rem; }
+
+.search-result-item {
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    background: #0f1117;
+    margin-bottom: 0.4rem;
+    font-size: 0.88rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ── Table ── */
+.server-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.server-table th {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid #2d3149;
+    color: #718096;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+}
+
+.server-table td {
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid #1e2235;
+}
+
+.server-table tbody tr:hover { background: #1e2235; }
+
+/* ── Badges ── */
+.badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-online  { background: #1c4532; color: #68d391; }
+.badge-offline { background: #3b1e1e; color: #fc8181; }
+
+/* ── No data ── */
+.no-data { color: #718096; font-size: 0.9rem; padding: 1rem 0; }
+
+/* ── Detail page ── */
+.back-link { display: inline-block; margin-bottom: 1rem; font-size: 0.88rem; }
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.detail-card {
+    background: #1a1d27;
+    border: 1px solid #2d3149;
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+
+.detail-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.detail-table th {
+    text-align: left;
+    padding: 0.55rem 0.75rem;
+    color: #718096;
+    font-weight: 500;
+    width: 40%;
+}
+.detail-table td { padding: 0.55rem 0.75rem; border-bottom: 1px solid #1e2235; }
