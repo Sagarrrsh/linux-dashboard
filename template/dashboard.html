@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Linux Audit{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Server Audit Dashboard</h1>
+<p class="last-scan">Last scan: {{ last_scan }}</p>
+
+<!-- Stats cards -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-label">Total Servers</span>
+        <span class="stat-value">{{ total_servers }}</span>
+    </div>
+    <div class="stat-card online">
+        <span class="stat-label">Online</span>
+        <span class="stat-value">{{ online_servers }}</span>
+    </div>
+    <div class="stat-card offline">
+        <span class="stat-label">Offline</span>
+        <span class="stat-value">{{ offline_servers }}</span>
+    </div>
+    <div class="stat-card health">
+        <span class="stat-label">Health Score</span>
+        <span class="stat-value">{{ health_score }}%</span>
+    </div>
+</div>
+
+<!-- Scan form -->
+<section class="scan-form">
+    <h2>Run New Scan</h2>
+    <form action="{{ url_for('submit_ips') }}" method="POST">
+        <textarea
+            name="ip_list"
+            rows="5"
+            placeholder="Enter one IP per line&#10;e.g.&#10;10.0.0.1&#10;10.0.0.2"
+        ></textarea>
+        <button type="submit" class="btn-primary">▶ Run Audit</button>
+    </form>
+</section>
+
+<!-- Search -->
+<section class="search-section">
+    <h2>Search Servers</h2>
+    <input
+        type="text"
+        id="search-input"
+        placeholder="Search by hostname…"
+        autocomplete="off"
+    />
+    <div id="search-results"></div>
+</section>
+
+<!-- Server table -->
+<section class="server-table-section">
+    <h2>All Servers</h2>
+    {% if servers %}
+    <table class="server-table">
+        <thead>
+            <tr>
+                <th>Hostname</th>
+                <th>IP</th>
+                <th>OS</th>
+                <th>Kernel</th>
+                <th>CPUs</th>
+                <th>RAM (MB)</th>
+                <th>Disk</th>
+                <th>Status</th>
+                <th>Last Seen</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for server in servers %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('server_detail', hostname=server['Hostname']) }}">
+                        {{ server['Hostname'] }}
+                    </a>
+                </td>
+                <td>{{ server.get('IP', '-') }}</td>
+                <td>{{ server.get('OS', '-') }}</td>
+                <td>{{ server.get('Kernel', '-') }}</td>
+                <td>{{ server.get('CPUs', '-') }}</td>
+                <td>{{ server.get('RAM_MB', '-') }}</td>
+                <td>{{ server.get('DiskUsage', '-') }}</td>
+                <td>
+                    <span class="badge {{ 'badge-online' if server.get('Status','').lower() == 'online' else 'badge-offline' }}">
+                        {{ server.get('Status', 'Unknown') }}
+                    </span>
+                </td>
+                <td>{{ server.get('LastSeen', '-') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="no-data">No data yet. Run a scan to populate the table.</p>
+    {% endif %}
+</section>
+{% endblock %}
