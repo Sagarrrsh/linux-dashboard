@@ -27,10 +27,9 @@ PLAYBOOK_PATH = os.path.join(
     "collect.yaml"
 )
 
-PRIVATE_KEY = os.path.join(
-    BASE_DIR,
-    "vault-keys",
-    "ec2-key.pem"
+PRIVATE_KEY = os.getenv(
+    "SSH_KEY_PATH",
+    "/app/vault-keys/ec2-syd-ops-key.pem"
 )
 
 
