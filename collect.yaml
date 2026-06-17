@@ -1,57 +1,61 @@
 ---
-- name: Linux Audit Collection
+
+* name: Initialize report
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+
+  * name: Ensure reports directory exists
+    file:
+    path: /app/data/reports
+    state: directory
+    mode: '0755'
+
+  * name: Create fresh CSV report
+    copy:
+    dest: /app/data/reports/latest_report.csv
+    content: |
+    Hostname,IP,OS,Kernel,UptimeSeconds,CPUs,RAM_MB,DiskUsage,Status,LastSeen
+
+* name: Linux Audit Collection
   hosts: targets
   gather_facts: yes
   become: yes
 
   tasks:
-    - name: Collect system info
-      set_fact:
-        audit_data:
-          hostname: "{{ ansible_hostname }}"
-          ip: "{{ ansible_default_ipv4.address | default(inventory_hostname) }}"
-          os: "{{ ansible_distribution }} {{ ansible_distribution_version }}"
-          kernel: "{{ ansible_kernel }}"
-          uptime_seconds: "{{ ansible_uptime_seconds }}"
-          cpu_count: "{{ ansible_processor_vcpus }}"
-          ram_mb: "{{ ansible_memtotal_mb }}"
-          status: "Online"
-          last_seen: "{{ ansible_date_time.iso8601 }}"
 
-    - name: Check disk usage
-      command: df -h /
-      register: disk_info
-      changed_when: false
+  * name: Collect system information
+    set_fact:
+    audit_data:
+    hostname: "{{ ansible_hostname }}"
+    ip: "{{ ansible_default_ipv4.address | default(inventory_hostname) }}"
+    os: "{{ ansible_distribution }} {{ ansible_distribution_version }}"
+    kernel: "{{ ansible_kernel }}"
+    uptime_seconds: "{{ ansible_uptime_seconds }}"
+    cpu_count: "{{ ansible_processor_vcpus }}"
+    ram_mb: "{{ ansible_memtotal_mb }}"
+    status: "Online"
+    last_seen: "{{ ansible_date_time.iso8601 }}"
 
-    - name: Parse disk usage
-      set_fact:
-        disk_usage: "{{ disk_info.stdout_lines[1].split()[4] }}"
+  * name: Get disk usage
+    shell: df -h / | awk 'NR==2 {print $5}'
+    register: disk_usage_result
+    changed_when: false
 
-    - name: Write report row to controller
-      delegate_to: localhost
-      lineinfile:
-        path: "{{ playbook_dir }}/data/reports/latest_report.csv"
-        line: >-
-          {{ audit_data.hostname }},{{ audit_data.ip }},{{ audit_data.os }},
-          {{ audit_data.kernel }},{{ audit_data.uptime_seconds }},
-          {{ audit_data.cpu_count }},{{ audit_data.ram_mb }},
-          {{ disk_usage }},{{ audit_data.status }},{{ audit_data.last_seen }}
-        create: yes
-
-  handlers: []
-
-- name: Initialise report with headers
-  hosts: localhost
-  gather_facts: no
-  tasks:
-    - name: Ensure reports directory exists
-      file:
-        path: "{{ playbook_dir }}/data/reports"
-        state: directory
-        mode: '0755'
-
-    - name: Write CSV header if file is missing
-      copy:
-        dest: "{{ playbook_dir }}/data/reports/latest_report.csv"
-        content: "Hostname,IP,OS,Kernel,UptimeSeconds,CPUs,RAM_MB,DiskUsage,Status,LastSeen\n"
-        force: no
+  * name: Append server row
+    delegate_to: localhost
+    lineinfile:
+    path: /app/data/reports/latest_report.csv
+    insertafter: EOF
+    line: >-
+    {{ audit_data.hostname }},
+    {{ audit_data.ip }},
+    {{ audit_data.os }},
+    {{ audit_data.kernel }},
+    {{ audit_data.uptime_seconds }},
+    {{ audit_data.cpu_count }},
+    {{ audit_data.ram_mb }},
+    {{ disk_usage_result.stdout }},
+    {{ audit_data.status }},
+    {{ audit_data.last_seen }}
